@@ -34,7 +34,40 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const brandsCollection = client.db('brandsDB').collection('brands');
+
+    const newBrands = [
+      {name:'Cocacola', image: 'https://i.ibb.co/pdc0BXb/brand3.png'},
+      {name:'Nestle', image: 'https://i.ibb.co/7QM5gFp/nestle.jpg'},
+      {name:'McDonald', image: 'https://i.ibb.co/1721pWG/mcdonald.png'},
+      {name:'Starbucks', image: 'https://i.ibb.co/NFZgkLb/starbuck.png'},
+      {name:'PepSico', image: 'https://i.ibb.co/y5YrZZk/pepsico.png'},
+      {name:'Kelloggs', image: 'https://i.ibb.co/DYv8Wzs/kellog-s.png'}
+  ];
+
+    app.get('/brands', async( req,res ) => {
+      const cursor = brandsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+    app.post('/brands', async(req,res) =>{
+      const newBrands = req.body;
+      console.log(newBrands);
+      const result = await brandsCollection.insertMany(newBrands);
+      res.send(result);
+  })
+
+
+
     const productsCollection = client.db('productsDB').collection('products');
+
+    app.get('/products', async(req,res) => {
+      const cursor = productsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
     app.post('/products', async(req,res) =>{
         const newProduct = req.body;
