@@ -62,9 +62,19 @@ async function run() {
 
 
     const productsCollection = client.db('productsDB').collection('products');
+    const usersCollection = client.db('productsDB').collection('user');
+    const cartsCollection = client.db('productsDB').collection('carts');
+
 
     app.get('/products', async(req,res) => {
       const cursor = productsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+
+    app.get('/carts', async(req,res) => {
+      const cursor = cartsCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
@@ -107,7 +117,25 @@ async function run() {
     })
 
 
+    // user related API
+     
+    app.post('/user', async( req, res) => {
+      const user = req.body;
+      console.log(user);
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    })
 
+    // cart related API
+
+    app.post('/carts', async(req,res) =>{
+      const newCartProduct = req.body;
+      console.log(newCartProduct);
+      const result = await cartsCollection.insertOne(newCartProduct);
+      res.send(result);
+  })
+
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
